@@ -1,0 +1,23 @@
+{
+  "name": "json-webtokens-login",
+  "version": "1.0.0",
+  "description": "A sample project denoting Web tokenizing in API Lifecycle development.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "nodemon server.js"
+  },
+  "keywords": [
+    "json-webtokens"
+  ],
+  "author": "AfrazButt",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "crypto": "^1.0.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.3",
+    "nodemon": "^3.0.1"
+  }
+}
