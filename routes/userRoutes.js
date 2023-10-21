@@ -7,4 +7,6 @@ router.get('/', userController.getUser);
 router.put('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
 
+router.get('/getNotToken', userController.loginWithoutToken)
+
 module.exports = router;
