@@ -22,10 +22,21 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) =>{
     try {
         const { id } = req.params; // this id variable should be exactly same as the route param
-        console.log(id); 
+        const updatedUser = await User.updateOne({ _id: id }, req.body, {new : true});
+        res.status(203).send(updatedUser);
     } catch (error) {
-        res.status(501).json({"error" : error})
+        res.status(501).json({"error" : error});
     }
 }
 
-module.exports = {createUser, getUser, updateUser}
+const deleteUser = async (req, res) => {
+    try {
+        const {id} = req.params;
+        await User.findByIdAndRemove({_id : id});
+        res.status(204);
+    } catch (error) {
+        res.status(501).json({"error" : error});
+    }
+}
+
+module.exports = {createUser, getUser, updateUser, deleteUser}
