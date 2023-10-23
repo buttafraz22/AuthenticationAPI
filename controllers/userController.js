@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken'); // Import the jwt library
 
 const createUser = async (req, res) => {
     try {
@@ -39,27 +40,75 @@ const deleteUser = async (req, res) => {
     }
 }
 
-const loginWithoutToken = async (req, res) => {  
+const dashboard = async(req, res) =>{
+    try{
+        res.send({msg : "Hello in the token protected API."});
+    }catch(err){
+        res.status(501);
+    }
+}
+
+const loginWithoutToken = async (req, res) => {
     try {
-      console.log(req.body);
-      const { username, password } = req.body;
-  
-      const user = await User.findOne({ username, password });
-  
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      res.status(200).json({
-        message: 'Logged in successfully',
-        username: user.username,
-        id: user._id
-      });
+        /* console.log(req.body); */
+        const { username, password } = req.body;
+
+        const user = await User.findOne({ username, password });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({
+            message: 'Logged in successfully',
+            username: user.username,
+            id: user._id
+        });
     } catch (err) {
-      console.log(err);
-      return res.status(500).json({ message: 'Some internal error' });
+        console.log(err);
+        return res.status(500).json({ message: 'Some internal error' });
     }
 };
+const login = async(req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        if (user.password !== password) return res.status(401).json({ error: 'Invalid password, try again!!' });
+        var token = GenerateToken(user);
+        /* console.log(token) */
 
-  
-module.exports = { createUser, getUser, updateUser, deleteUser, loginWithoutToken }
+        return res.status(200).json({
+            message: 'Logged in successfully',
+            username: username,
+            fullname: user.firstName + ' ' + user.lastName,
+            userid: user._id,
+            role: user.role,
+            token: token,
+        });
+    } catch (err) {
+        return res.status(500).json({ message: err });
+    }
+
+};
+/*
+    Helping functions
+*/
+
+const GenerateToken = (user) => {
+
+    const payload = {
+
+        role: user.role,
+
+        id: user._id,
+
+    };
+
+    const token = jwt.sign(payload,'IWTGO26f2003');
+
+    return token;
+
+};
+
+module.exports = { createUser, getUser, updateUser, deleteUser, loginWithoutToken, login, dashboard }
